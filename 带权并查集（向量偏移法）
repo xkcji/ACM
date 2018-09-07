@@ -1,0 +1,22 @@
+带权并查集——向量偏移法
+查找（路径压缩）：
+int findx(int x ){
+    if(x==f[x])
+        return x;
+    int fx = f[x];
+    f[x] = findx(f[x]);
+    r[x] = r[x]+r[fx];//路径压缩过程中，树相当于有两层，关系域更新
+    return f[x];
+}//f[x]为x的父节点，r[x]为x与父节点之间的权值
+合并：
+bool bing(int x,int y,int v){
+    int fx = findx(x);
+    int fy = findx(y);
+    if(fx!=fy){
+        f[fx] = fy;
+        r[fx] = -r[x]+r[y]+v;//合并操作时的关系域更新
+        return 0;
+    }
+    if(r[x]-r[y]!=v) return 1;//若两点根节点一样，则判断按照前面的描述构成的集合所描述的x——>y的偏移量是否与题目一致
+    return 0;
+}
