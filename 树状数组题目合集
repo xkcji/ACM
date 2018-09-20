@@ -81,7 +81,7 @@ int main(){
     return  0;
 }
 
-POJ1195//单点修改，区间求和
+POJ1195//单点修改，区间求和，二维树状数组，和一维没多大区别
 #include <iostream>
 #include <cstdio>
 #include <cstring>
