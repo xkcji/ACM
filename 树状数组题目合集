@@ -1,0 +1,189 @@
+POJ2299//求逆序对
+#include <iostream>
+#include <algorithm>
+#include <cstdio>
+using namespace std;
+const int maxn = 500005;
+struct Node{
+    int val;
+    int pos;
+}node[maxn];
+int c[maxn],r[maxn],n;
+bool cmp(const Node &a,const Node &b){
+    return a.val<b.val;
+}
+int lowbit(int x){
+    return x&(-x);
+}
+void update(int x){
+    while(x<=n){
+        c[x]+=1;
+        x+=lowbit(x);
+    }
+}
+int get_sum(int x){
+    int sum = 0;
+    while(x>0){
+        sum+=c[x];
+        x-=lowbit(x);
+    }
+    return  sum;
+}
+int main(){
+    while(scanf("%d",&n)!=EOF&&n){
+        for(int i=1;i<=n;++i) scanf("%d",&node[i].val),node[i].pos = i;
+        sort(node+1,node+1+n,cmp);
+        for(int i=1;i<=n;++i) r[node[i].pos] = i,c[i] = 0;
+        long long ans = 0;
+        for(int i=1;i<=n;++i){
+            update(r[i]);
+            ans+=i-get_sum(r[i]);
+        }
+        printf("%lld\n",ans);
+    }
+    return 0;
+}
+
+POJ2352//对于一个序列每个位置上的数比它小的数
+#include <iostream>
+#include <cstring>
+using namespace std;
+const int maxn = 32005;
+int c[maxn],lev[maxn],n;
+int lowbit(int x){return x&(-x);}
+int get_sum(int x){
+    int ans = 0;
+    while(x>0){
+        ans+=c[x];
+        x-=lowbit(x);
+    }
+    return ans;
+}
+void add(int x){
+    while(x<maxn){
+        c[x]+=1;
+        x+=lowbit(x);
+    }
+}
+int main(){
+    scanf("%d",&n);
+    memset(c,0,sizeof(c));
+    memset(lev,0,sizeof(lev));
+    for(int i=0;i<n;++i){
+        int s,t;
+        scanf("%d%d",&s,&t);
+        s++;
+        lev[get_sum(s)]++;
+        add(s);
+    }
+    for(int i=0;i<n;++i)
+        printf("%d\n",lev[i]);
+    return  0;
+}
+
+POJ1195//单点修改，区间求和
+#include <iostream>
+#include <cstdio>
+#include <cstring>
+#define mem(a,b) memset(a,b,sizeof(a))
+using namespace std;
+typedef long long ll;
+const int maxn = 1050;
+ll c[maxn][maxn],a[maxn][maxn];
+ll n;
+int lowbit(int x){return x&(-x);}
+void update(int x,int y,int d){
+    for(int i=x;i<=n;i+=lowbit(i))
+        for(int j=y;j<=n;j+=lowbit(j))
+            c[i][j]+=d;
+}
+int sum(int x,int y){
+    ll res = 0;
+    for(int i = x;i>0;i-=lowbit(i))
+        for(int j = y;j>0;j-=lowbit(j))
+            res+=c[i][j];
+    return res;
+}
+int main(){
+    ll s;
+    scanf("%lld%lld",&s,&n);
+    mem(c,0);
+    while(1){
+        ll op;
+        scanf("%lld",&op);
+        if(op==3)
+            break;
+        else if(op==1){
+            int x,y,k;
+            scanf("%d%d%d",&x,&y,&k);
+            update(x+1,y+1,k);
+        }
+        else{
+            int l,b,r,t;
+            scanf("%d%d%d%d",&l,&b,&r,&t);
+            l++,b++,r++,t++;
+            ll ans;
+            ans = sum(r,t)-sum(r,b-1)-sum(l-1,t)+sum(l-1,b-1);
+            printf("%lld\n",ans);
+        }
+    }
+    return 0;
+}
+
+POJ2481//同POJ2352
+#include <iostream>
+#include <cstdio>
+#include <algorithm>
+#include <cstring>
+#define mem(a,b) memset(a,b,sizeof(a))
+using namespace std;
+const int maxn = 100010;
+struct cow{
+    int s,e,pos;
+}node[maxn];
+int c[maxn],a[maxn];
+int n;
+int lowbit(int x){return x&(-x);}
+void add(int x,int y){
+    while(x<=y){
+        c[x]+=1;
+        x+=lowbit(x);
+    }
+}
+int sum(int x){
+    int res = 0;
+    while(x>0){
+        res+=c[x];
+        x-=lowbit(x);
+    }
+    return res;
+}
+bool cmp(const cow &a,const cow &b){
+    if(a.e==b.e)
+        return a.s<b.s;
+    return a.e>b.e;
+}
+int main(){
+    while(scanf("%d",&n)!=EOF&&n){
+          mem(c,0);
+          mem(a,0);
+          for(int i=1;i<=n;++i){
+          scanf("%d%d",&node[i].s,&node[i].e);
+          node[i].pos = i;
+        }
+          sort(node+1,node+1+n,cmp);
+          a[node[1].pos] = 0;
+          add(node[1].s+1,node[1].e+1);
+          for(int i=2;i<=n;++i){
+            if(node[i].e==node[i-1].e&&node[i].s==node[i-1].s)
+                a[node[i].pos] = a[node[i-1].pos];
+            else
+                a[node[i].pos] = sum(node[i].s+1);
+            add(node[i].s+1,node[i].e+1);
+          }
+          printf("%d",a[1]);
+          for(int i=2;i<=n;++i) printf(" %d",a[i]);
+          printf("\n");
+    }
+    return 0;
+}
