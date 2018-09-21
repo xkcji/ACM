@@ -1,0 +1,7 @@
+1.
+add(a[i])
+ans+=i-sum(a[i])
+
+2.
+ans+=sum(n)-sum(a[i])
+add(a[i])
