@@ -18,3 +18,22 @@ inline void KMP() //KMP
         if(t2==len2) printf("%d\n",t1-len2+1),t2=next1[t2];//t2==lenn2时，匹配成功；t1-len2+1即为第一个字母的位置 
     } //匹配成功后，t2置为next[t2] 
 } 
+int kmp()
+{
+    int i,j;
+    i = j = 0;
+    while(i < l1)//注意和返回下标的区别
+    {
+        while(j!=-1&&str1[i]!=str2[j])
+        {
+            j = next[j];
+        }
+        if(j == l2-1)
+        {
+           ans ++;
+           j = next[j];
+        }
+        i++，j++;
+    }
+    return ans;//返回匹配次数 
+}
