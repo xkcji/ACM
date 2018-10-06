@@ -1,0 +1,44 @@
+POJ1321
+
+//固定行，然后只需判断每列的情况
+#include <iostream>
+#include <cstring>
+using namespace std;
+char a[10][10];
+bool visit[10];
+int n,k;
+int sum,cnt;
+void dfs(int i){
+    if(sum==k){
+        cnt++;
+        return;
+    }
+    if(i>n)
+        return ;
+    for(int j=1;j<=n;++j){
+        if(!visit[j]&&a[i][j]=='#'){
+            sum++;
+            visit[j] = true;
+            dfs(i+1);
+            visit[j] = false;
+            sum--;
+        }
+    }
+    dfs(i+1);
+}
+int main(){
+    while( cin>>n>>k){
+        if(n==-1&&k==-1)
+            break;
+        memset(a,0,sizeof(a));
+        for(int i=1;i<=n;++i)
+            for(int j=1;j<=n;++j)
+                cin>>a[i][j];
+        memset(visit,0,sizeof(visit));
+        sum = 0;
+        cnt = 0;
+        dfs(1);
+        cout << cnt << endl;
+    }
+    return 0;
+}
