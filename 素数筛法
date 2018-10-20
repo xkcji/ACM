@@ -1,0 +1,15 @@
+//素数筛法就是先把所有的数都先看作素数，然后筛选掉合数
+void prime()
+{
+		for(int i=1;i<maxn;++i) isprime[i] = 1;//全初始化为和数
+		cnt = 1;
+        isprime[0] = isprime[1] = 0;
+        for(int i=2;i<=maxn;++i){
+			if(isprime[i])
+				su[cnt++] = i;
+			for(int j = 1;j<cnt&&su[j]*i<maxn;++j){//筛掉小于等于i的素数与i的乘积
+				isprime[su[j]*i] = 0;
+			}
+
+      }
+}
