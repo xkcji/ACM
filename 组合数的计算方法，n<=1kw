@@ -1,0 +1,71 @@
+#include <cstdio>
+#include <iostream>
+#include <cstring>
+const int maxn=50010;
+using namespace std;
+bool isprime[maxn];
+int su[maxn],cnt;
+//素数筛法就是先把所有的数都先看作素数，然后筛选掉合数
+void prime()
+{
+		for(int i=1;i<maxn;++i) isprime[i] = 1;//全初始化为和数
+		cnt = 1;
+        isprime[0] = isprime[1] = 0;
+        for(int i=2;i<=maxn;++i){
+			if(isprime[i])
+				su[cnt++] = i;
+			for(int j = 1;j<cnt&&su[j]*i<maxn;++j){//筛掉小于等于i的素数与i的乘积
+				isprime[su[j]*i] = 0;
+			}
+
+        }
+}
+//计算n!中素数因子p的指数(唯一分解定理)
+int cal(int x,int p)
+{
+        int ans=0;
+        long long rec=p;
+        while(x>=rec)
+        {
+                ans+=x/rec;
+                rec*=p;
+        }
+        return ans;
+}
+//计算n的k次方对m取模，二分法
+int pow(long long n,int k,int M)
+{
+        long long ans=1;
+        while(k)
+        {
+                if(k&1)
+                {
+                        ans=(ans*n)%M;
+                }
+                n=(n*n)%M;
+                k>>=1;
+        }
+        return ans;
+}
+//计算C（n，m）
+int combination(int n,int m)
+{
+        const int M=10007;
+        int num;
+        int ans = 1;
+        for(int i=1;i<cnt&&su[i]<=n;++i)
+        {
+                num=cal(n,su[i])-cal(m,su[i])-cal(n-m,su[i]);
+                ans=(ans*pow(prim[i],num,M))%M;
+        }
+        return ans;
+}
+int main()
+{
+        int m,n;
+        prime();
+        for(int i=1;i<=1000;++i)cout << su[i]<<" ";
+        scanf("%d%d",&n,&m);
+        printf("%d\n",combination(n,m));
+        return 0;
+}
