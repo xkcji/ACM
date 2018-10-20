@@ -1,0 +1,12 @@
+//计算n!中素数因子p的指数
+int cal(int x,int p)
+{
+        int ans=0;
+        long long rec=p;
+        while(x>=rec)
+        {
+                ans+=x/rec;
+                rec*=p;
+        }
+        return ans;
+}
