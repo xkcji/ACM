@@ -1,0 +1,41 @@
+
+void build(int left,int right,int index)
+{
+    if(left==right) scanf("%d",&node[index]);
+    else
+    {
+        int mid=(left+right)>>1;
+ 
+        build(left,mid,index<<1);//创建左子树
+        build(mid+1,right,index<<1|1);//创建右子树
+ 
+        node[index]=max(node[index<<1],node[index<<1|1]);//当前节点的最大值为左右子树的最大值
+    }
+}
+ 
+int query(int x,int y,int left,int right,int index)
+{
+    if(x<=left && y>=right) return node[index];
+    else
+    {
+        int mid=(left+right)>>1,maxnum=0;
+        if(x<=mid) maxnum=max(maxnum,query(x,y,left,mid,index<<1));//往左走
+        if(y>mid) maxnum=max(maxnum,query(x,y,mid+1,right,index<<1|1));//往右走
+ 
+        return maxnum;
+    }
+}
+ 
+void update(int p,int v,int left,int right,int index)
+{
+    if(left==right) node[index]=v;
+    else
+    {
+        int mid=(left+right)>>1;
+ 
+        if(p<=mid) update(p,v,left,mid,index<<1);//如果p点在左子树就更新左子树
+        else update(p,v,mid+1,right,index<<1|1);//如果p点在右子树就更新右子树
+ 
+        node[index]=max(node[index<<1],node[index<<1|1]);//当前节点的最大值为左右子树的最大值
+    }
+}
