@@ -39,3 +39,73 @@ void update(int p,int v,int left,int right,int index)
         node[index]=max(node[index<<1],node[index<<1|1]);//当前节点的最大值为左右子树的最大值
     }
 }
+
+
+POJ 3264 //求区间最大值最小值
+//不需要update函数
+#include <iostream>
+#include <cstdio>
+#define pb push_back
+#define M(a) memset(a,0,sizeof(a))
+#define lson l , m , num << 1
+#define rson m+1 , r , num << 1|1
+#define inf (1<<20)
+using namespace std;
+const int maxn = 50010;
+typedef long long ll;
+ll n,m;
+ll MAX[maxn<<2],MIN[maxn<<2];
+
+void PushUp(int x){
+	MAX[x] = max(MAX[x<<1],MAX[x<<1|1]);
+	MIN[x] = min(MIN[x<<1],MIN[x<<1|1]);
+}
+
+void build(int l,int r,int num){
+	if(l==r){
+		scanf("%lld",&MAX[num]);
+		MIN[num] = MAX[num];
+		return;
+	}
+	int m = (l+r)>>1;
+	build(lson);
+	build(rson);
+	PushUp(num);
+}
+
+ll queryma(int l1,int r1,int l,int r,int num){
+	if(l1<=l&&r<=r1){
+		return MAX[num];
+	}
+	int m = (l+r)>>1;
+	ll res = 0;
+	if(l1<=m)
+		res = max(res,queryma(l1,r1,lson));
+	if(r1>m)
+		res = max(res,queryma(l1,r1,rson));
+	return res;
+}
+
+ll querymi(int l1,int r1,int l,int r,int num){
+	if(l1<=l&&r<=r1){
+		return MIN[num];
+	}
+	int m = (l+r)>>1;
+	ll res = inf;
+	if(l1<=m)
+		res = min(res,querymi(l1,r1,lson));
+	if(r1>m)
+		res = min(res,querymi(l1,r1,rson));
+	return res;
+}
+int main(){
+	while(~scanf("%lld%lld",&n,&m)){
+		build(1,n,1);
+		while(m--){
+			ll l,r;
+			scanf("%lld%lld",&l,&r);
+			printf("%lld\n",queryma(l,r,1,n,1)-querymi(l,r,1,n,1));
+		}
+	}
+	return 0;
+}
