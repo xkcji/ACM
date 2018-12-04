@@ -1,4 +1,44 @@
 //只用到标记数组
+POJ 2528
+void pushdown(int rt)
+{
+    sum[rt<<1]=sum[rt];
+    sum[rt<<1|1]=sum[rt];
+    sum[rt]=-1;
+}
+void update(int L,int R,int C,int l,int r,int rt)
+{
+    if(L<=l&&r<=R)
+    {
+        sum[rt]=C;
+        return ;
+    }
+    if(sum[rt]!=-1)
+        pushdown(rt);
+    int m=(l+r)>>1;
+    if(m>=R) update(L,R,C,l,m,rt<<1);
+    else if(L>m) update(L,R,C,m+1,r,rt<<1|1);
+    else update(L,m,C,l,m,rt<<1),update(m+1,R,C,m+1,r,rt<<1|1);
+}
+int ans;
+void query(int l,int r,int rt)
+{
+        if(!vis[sum[rt]]&&sum[rt]!=-1)
+        {
+            ans++;
+            vis[sum[rt]]=1;
+        return ;
+        }
+    if(l==r)
+    {
+        return ;
+    }
+    if(sum[rt]!=-1)
+        pushdown(rt);
+    int m=(l+r)>>1;
+    query(l,m,rt<<1);
+    query(m+1,r,rt<<1|1);
+}
 void pushdown(int rt)
 {
     sum[rt<<1]=sum[rt];
