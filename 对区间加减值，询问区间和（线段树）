@@ -1,0 +1,97 @@
+
+POJ 3468
+要跟家深刻理解标记数组的作用
+#include <algorithm>
+#include <iostream>
+#include <cstring>
+#include <cstdio>
+#include <vector>
+#include <string>
+#include <queue>
+#include <map>
+#include <set>
+#define M(a) memset(a,0,sizeof(a))
+#define pb push_back
+#define lson l , m , num << 1
+#define rson m+1 , r , num << 1|1
+#define fi first
+#define se second
+#define mod (1000000000+7)
+#define inf (0x3f3f3f3f3f3f3f3f)
+using namespace std;
+const int maxn = 100010;
+typedef long long ll;
+typedef double db;
+typedef pair<ll ,ll> P;
+ll node[4*maxn],l1[4*maxn];
+int n,q;
+
+void push_up(int num){
+	node[num] = node[num<<1]+node[num<<1|1];
+}
+
+void push_down(int num,int len){
+	if(l1[num]!=0){
+		l1[num<<1] += l1[num];
+		l1[num<<1|1] += l1[num];
+		node[num<<1] += l1[num]*(len-(len>>1));//左区间(l+r)>>1,>=右区间长度
+		node[num<<1|1] += l1[num]*(len>>1);
+		l1[num] = 0;
+	}
+}
+void build(int l,int r,int num){
+	l1[num] = 0;
+	if(l==r){
+		scanf("%lld",&node[num]);
+		return;
+	}
+	int m = (l+r)>>1;
+	build(lson);
+	build(rson);
+	push_up(num);
+}
+
+void update(int L,int R,int l,int r,int num,int z){
+	if(L<=l&&r<=R){
+		node[num]+=(r-l+1)*z;
+		l1[num] += z;
+		return;
+	}
+	push_down(num,r-l+1);
+	int m = (l+r)>>1;
+	if(L<=m) update(L,R,lson,z);
+	if(R>m) update(L,R,rson,z);
+	push_up(num);
+}
+
+ll query(int L,int R,int l,int r,int num){
+	if(L<=l&&r<=R) return node[num];
+	push_down(num,r-l+1);
+	int m = (l+r)>>1;
+	ll ans = 0;
+	if(L<=m) ans+=query(L,R,lson);
+	if(R>m) ans+=query(L,R,rson);
+	return ans;
+}
+int main(){
+	//ios::sync_with_stdio(0);
+	//freopen("in.txt","r",stdin);
+	//freopen("out.txt","w",stdout);
+	while(~scanf("%d%d",&n,&q)){
+		build(1,n,1);
+		for(int i=1;i<=q;++i){
+			int x,y,z;
+			char ch;
+			cin>>ch;
+			if(ch=='Q'){
+				scanf("%d%d",&x,&y);
+				printf("%lld\n",query(x,y,1,n,1));
+			}
+			else{
+				scanf("%d%d%d",&x,&y,&z);
+				update(x,y,1,n,1,z);
+			}
+		}
+	}
+	return 0;
+}
