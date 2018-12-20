@@ -1,0 +1,25 @@
+
+int Merge_Heap(int r1,int r2){//合并堆
+    if(r1==0||r2==0) return r1+r2;
+    if(a[r1].v>a[r2].v||(a[r1].v==a[r2].v&&r1>r2)) swap(r1,r2);//默认r1为新的根节点
+    a[r1].r = Merge_Heap(a[r1].r,r2);//把r2和r1的右子树合并一下
+    a[a[r1].r].f = r1;//标记r1右子树所在左偏树的根节点是r1
+    if(a[a[r1].l].dis<a[a[r1].r].dis) swap(a[r1].l,a[r1].r);//左边高右边矮
+    a[r1].dis = a[a[r1].r].dis+1;//当前结点的距离为，右子树节点树+1
+    return r1;
+}
+void Delete(int x){//删除堆堆顶元素
+    a[x].f = -1;//父节点为-1表示该节点不存在
+    a[a[x].l].f = 0;
+    a[a[x].r].f = 0;
+    Merge_Heap(a[x].l,a[x].r);//将左右子树合并
+}
+
+pb_ds()配对堆可以直接用（目前尚未掌握）
+
+3个例题
+
+洛谷3777，1552，3066
+
+
+
